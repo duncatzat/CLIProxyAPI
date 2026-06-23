@@ -1,0 +1,19 @@
+FROM debian:bookworm-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tzdata ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /CLIProxyAPI
+
+ARG TARGETARCH
+COPY bins/${TARGETARCH}/CLIProxyAPI .
+
+RUN chmod +x CLIProxyAPI
+
+EXPOSE 8317
+
+ENV TZ=Asia/Shanghai
+RUN cp /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
+
+CMD ["./CLIProxyAPI"]
